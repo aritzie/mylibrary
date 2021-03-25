@@ -1,34 +1,29 @@
 package com.sanvalero.mylibrary.domain;
 
-
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "books")
-public class Book {
+@Entity(name = "authors")
+public class Author {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Column
-    private String title;
+    private String name;
+    @Column(name = "last_name")
+    private String lastName;
     @Column
-    private String isbn;
+    private LocalDate birthday;
     @Column
-    private String genre;
-    @Column(name = "publishing_house")
-    private String publishingHouse;
+    private String phone;
     @Column
-    private String author;
-    @Column
-    float price;
+    private String email;
 }
-

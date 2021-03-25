@@ -13,7 +13,7 @@ import java.util.Set;
 public class BookServiceImp implements BookService {
 
     @Autowired
-    BookRepository bookRepository;
+    private BookRepository bookRepository;
 
     @Override
     public Set<Book> findAllBooks() {

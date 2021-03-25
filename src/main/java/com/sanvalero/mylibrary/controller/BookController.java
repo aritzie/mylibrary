@@ -16,12 +16,11 @@ import static com.sanvalero.mylibrary.controller.Response.NOT_FOUND;
 public class BookController {
 
     @Autowired
-    BookService bookService;
+    private BookService bookService;
 
     @GetMapping("/books")
     public ResponseEntity<Set<Book>> getBooks(){
-        Set<Book> books = null;
-        books = bookService.findAllBooks();
+        Set<Book> books =  bookService.findAllBooks();
         return new ResponseEntity<>(books, HttpStatus.OK);
     }
 
