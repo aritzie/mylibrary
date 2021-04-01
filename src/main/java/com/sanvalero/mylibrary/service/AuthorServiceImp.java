@@ -42,4 +42,5 @@ public class AuthorServiceImp implements AuthorService {
         authorRepository.findById(id).orElseThrow(()-> new AuthorNotFoundException(id));
         authorRepository.deleteById(id);
     }
+
 }

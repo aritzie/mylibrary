@@ -2,6 +2,7 @@ package com.sanvalero.mylibrary.domain;
 
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,15 +21,13 @@ public class Book {
     private long id;
     @Column
     private String title;
-    @Column
-    private String isbn;
-    @Column
-    private String genre;
-    @Column(name = "publishing_house")
-    private String publishingHouse;
-    @Column
-    private String author;
-    @Column
-    float price;
+
+    @ManyToOne
+    @JoinColumn(name = "editorial_id")
+    private Editorial editorial;
+
+    @ManyToOne
+    @JoinColumn(name = "author_id")
+    private Author author;
 }
 

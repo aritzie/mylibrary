@@ -1,6 +1,7 @@
 package com.sanvalero.mylibrary.controller;
 
 import com.sanvalero.mylibrary.domain.Book;
+import com.sanvalero.mylibrary.domain.dto.BookDTO;
 import com.sanvalero.mylibrary.exception.BookNotFoundException;
 import com.sanvalero.mylibrary.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +32,8 @@ public class BookController {
     }
 
     @PostMapping("/books")
-    public ResponseEntity<Book> addBook(@RequestBody Book book){
-        Book addedBook = bookService.addBook(book);
+    public ResponseEntity<Book> addBook(@RequestBody BookDTO bookDTO){
+        Book addedBook = bookService.addBook(bookDTO);
         return new ResponseEntity<>(addedBook, HttpStatus.CREATED);
     }
 

@@ -1,11 +1,13 @@
 package com.sanvalero.mylibrary.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -18,12 +20,8 @@ public class Editorial {
     private long id;
     @Column
     private String name;
-    @Column(name = "foundation_date")
-    private LocalDate foundationDate;
-    @Column
-    private String location;
-    @Column
-    private String phoneNumber;
-    @Column
-    private String email;
+
+    @OneToMany(mappedBy = "editorial")
+    @JsonBackReference
+    private List<Book> books;
 }
