@@ -3,11 +3,13 @@ package com.sanvalero.mylibrary.domain;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 
 @Data
@@ -16,9 +18,13 @@ import javax.persistence.*;
 @Entity(name = "books")
 public class Book {
 
+    @Schema(description = "Identificador del libro", example="1", required = true)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+    @Schema(description = "Título del libro", example = "1984", required = true)
+    @NotBlank
     @Column
     private String title;
 

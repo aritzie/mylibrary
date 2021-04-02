@@ -4,6 +4,13 @@ import com.sanvalero.mylibrary.domain.Book;
 import com.sanvalero.mylibrary.domain.dto.BookDTO;
 import com.sanvalero.mylibrary.exception.BookNotFoundException;
 import com.sanvalero.mylibrary.service.BookService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,36 +21,68 @@ import java.util.Set;
 import static com.sanvalero.mylibrary.controller.Response.NOT_FOUND;
 
 @RestController
+@Tag(name = "Books", description = "Catálogo de libros")
 public class BookController {
 
     @Autowired
     private BookService bookService;
 
-    @GetMapping("/books")
+    @Operation(summary = "Obtiene el listado de libros")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Listado de libros",
+                content = @Content(array = @ArraySchema(schema = @Schema(implementation = Book.class))))
+    })
+    @GetMapping(value = "/books", produces = "application/json")
     public ResponseEntity<Set<Book>> getBooks(){
         Set<Book> books =  bookService.findAllBooks();
         return new ResponseEntity<>(books, HttpStatus.OK);
     }
 
-    @GetMapping("/books/{id}")
+    @Operation(summary = "Obtiene un libro determinado")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Existe el libro",
+                    content = @Content(schema = @Schema(implementation = Book.class))),
+            @ApiResponse(responseCode = "404", description = "No existe el libro",
+                    content = @Content(schema = @Schema(implementation = Response.class)) )
+    })
+    @GetMapping(value = "/books/{id}", produces = "application/json")
     public ResponseEntity<Book> getBook(@PathVariable long id){
         Book book = bookService.findById(id).orElseThrow(() -> new BookNotFoundException(id));
         return new ResponseEntity<>(book, HttpStatus.OK);
     }
 
-    @PostMapping("/books")
+    @Operation(summary = "Registra un nuevo libro")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Libro registrado",
+                    content = @Content(schema = @Schema(implementation = Book.class)))
+    })
+    @PostMapping(value = "/books", produces = "application/json", consumes = "application/json")
     public ResponseEntity<Book> addBook(@RequestBody BookDTO bookDTO){
         Book addedBook = bookService.addBook(bookDTO);
         return new ResponseEntity<>(addedBook, HttpStatus.CREATED);
     }
 
-    @PutMapping("/books/{id}")
+    @Operation(summary = "Modifica un libro del catálogo")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Libro modificado",
+                    content = @Content(schema = @Schema(implementation = Book.class))),
+            @ApiResponse(responseCode = "404", description = "No existe el libro",
+                    content = @Content(schema = @Schema(implementation = Response.class)))
+    })
+    @PutMapping(value ="/books/{id}", produces = "application/json",consumes = "application/json")
     public ResponseEntity<Book> modifyBook(@PathVariable long id, @RequestBody Book newBook){
         Book book = bookService.modifyBook(id, newBook);
         return new ResponseEntity<>(book, HttpStatus.OK);
     }
 
-    @DeleteMapping("/books/{id}")
+    @Operation(summary = "Elimina un libro del catálogo")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Libro eliminado",
+                    content = @Content(schema = @Schema(implementation = Response.class))),
+            @ApiResponse(responseCode = "404", description = "No existe el libro",
+                    content = @Content(schema = @Schema(implementation = Response.class)))
+    })
+    @DeleteMapping(value = "/books/{id}", produces = "application/json")
     public ResponseEntity<Response> deleteBook(@PathVariable long id){
         bookService.deleteBook(id);
         return new ResponseEntity<>(Response.noErrorResponse(), HttpStatus.OK);
