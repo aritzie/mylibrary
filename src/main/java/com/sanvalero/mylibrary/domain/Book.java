@@ -28,6 +28,18 @@ public class Book {
     @Column
     private String title;
 
+    @Schema(description = "Género del libro", example = "Narrativa")
+    @Column
+    private String genre;
+
+    @Schema(description = "Calificación del libro", example = "8.5")
+    @Column
+    private float rate;
+
+    @Schema(description = "El libro está catalogado", example = "true")
+    @Column
+    private boolean cataloged;
+
     @ManyToOne
     @JoinColumn(name = "editorial_id")
     private Editorial editorial;

@@ -29,7 +29,7 @@ public class EditorialController {
     @Operation(summary = "Obtiene un listado de las editoriales")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Listado de editoriales",
-                content = @Content(array = @ArraySchema(schema = @Schema(implementation = Editorial.class))))
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = Editorial.class))))
     })
     @GetMapping(value = "/editorials", produces = "application/json")
     public ResponseEntity<Set<Editorial>> getEditorials(){
@@ -40,9 +40,9 @@ public class EditorialController {
     @Operation(summary = "Obtiene una editorial determinada")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Editorial existente",
-                content = @Content(schema = @Schema(implementation = Editorial.class))),
+                    content = @Content(schema = @Schema(implementation = Editorial.class))),
             @ApiResponse(responseCode = "404", description = "No existe editorial",
-                content = @Content(schema = @Schema(implementation = Response.class)))
+                    content = @Content(schema = @Schema(implementation = Response.class)))
     })
     @GetMapping(value = "/editorials/{id}", produces = "application/json")
     public ResponseEntity<Editorial> getEditorial(@PathVariable long id){
@@ -52,8 +52,8 @@ public class EditorialController {
 
     @Operation(summary = "Registra una nueva editorial")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Editorial registrada",
-                content = @Content(schema = @Schema(implementation = Editorial.class)))
+            @ApiResponse(responseCode = "201", description = "Editorial registrada",
+                    content = @Content(schema = @Schema(implementation = Editorial.class)))
     })
     @PostMapping(value = "/editorials", produces = "application/json", consumes = "application/json")
     public ResponseEntity<Editorial> addEditorial(@RequestBody  Editorial editorial){
@@ -64,9 +64,9 @@ public class EditorialController {
     @Operation(summary = "Modifica una editorial existente")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Editorial modificada",
-                content = @Content(schema = @Schema(implementation = Editorial.class))),
+                    content = @Content(schema = @Schema(implementation = Editorial.class))),
             @ApiResponse(responseCode = "404", description = "No existe editorial",
-                content = @Content(schema = @Schema(implementation = Response.class)))
+                    content = @Content(schema = @Schema(implementation = Response.class)))
     })
     @PutMapping(value = "/editorials/{id}", produces = "application/json", consumes = "application/json")
     public ResponseEntity<Editorial> modifyEditorial(@PathVariable long id, @RequestBody Editorial newEditorial){
@@ -77,9 +77,9 @@ public class EditorialController {
     @Operation(summary = "Borra una editorial existente")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Editorial eliminada",
-                content = @Content(schema = @Schema(implementation = Response.class))),
+                    content = @Content(schema = @Schema(implementation = Response.class))),
             @ApiResponse(responseCode = "404", description = "No existe editorial",
-                content = @Content(schema = @Schema(implementation = Response.class)))
+                    content = @Content(schema = @Schema(implementation = Response.class)))
     })
     @DeleteMapping(value = "/editorials/{id}", produces = "application/json")
     public ResponseEntity<Response> deleteEditorial(@PathVariable long id){

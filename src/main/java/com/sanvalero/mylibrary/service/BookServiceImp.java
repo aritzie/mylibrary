@@ -34,9 +34,30 @@ public class BookServiceImp implements BookService {
     }
 
     @Override
+    public Set<Book> findByParameters(Book book) {
+        if(book.getTitle().equals("") && book.getGenre().equals("") && book.getRate()==0){
+            return findAllBooks();
+        }
+        else if(!book.getTitle().equals("") && book.getGenre().equals("")){
+            return bookRepository.findByTitleContainingAndRateGreaterThanEqual(book.getTitle(), book.getRate());
+        }
+        else if(book.getTitle().equals("") && !book.getGenre().equals("")){
+            return bookRepository.findByGenreAndRateGreaterThanEqual(book.getGenre(), book.getRate());
+        }
+        else if(book.getTitle().equals("") && book.getGenre().equals("") && book.getRate()!=0){
+            return bookRepository.findByRateGreaterThanEqual(book.getRate());
+        }
+        else {
+            return bookRepository.findByTitleContainingAndGenreAndRateGreaterThanEqual(book.getTitle(), book.getGenre(),
+                    book.getRate());
+        }
+    }
+
+    @Override
     public Optional<Book> findById(long id) {
         return bookRepository.findById(id);
     }
+
 
     @Override
     public Book addBook(BookDTO bookDTO) {

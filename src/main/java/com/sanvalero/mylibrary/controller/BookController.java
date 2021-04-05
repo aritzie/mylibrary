@@ -30,11 +30,21 @@ public class BookController {
     @Operation(summary = "Obtiene el listado de libros")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Listado de libros",
-                content = @Content(array = @ArraySchema(schema = @Schema(implementation = Book.class))))
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = Book.class)))),
+            @ApiResponse(responseCode = "404", description = "Los libros no coinciden",
+                    content = @Content(schema = @Schema(implementation = Response.class)))
     })
     @GetMapping(value = "/books", produces = "application/json")
-    public ResponseEntity<Set<Book>> getBooks(){
-        Set<Book> books =  bookService.findAllBooks();
+    public ResponseEntity<Set<Book>> getBooks(@RequestParam(value = "title", defaultValue = "") String title,
+                                              @RequestParam(value = "genre", defaultValue = "") String genre,
+                                              @RequestParam(value = "rate", defaultValue = "0") float rate)
+    {
+        Book searchBook = new Book();
+        searchBook.setTitle(title);
+        searchBook.setGenre(genre);
+        searchBook.setRate(rate);
+        Set<Book> books =  bookService.findByParameters(searchBook);
+        if(books.isEmpty()) new BookNotFoundException();
         return new ResponseEntity<>(books, HttpStatus.OK);
     }
 
@@ -43,7 +53,7 @@ public class BookController {
             @ApiResponse(responseCode = "200", description = "Existe el libro",
                     content = @Content(schema = @Schema(implementation = Book.class))),
             @ApiResponse(responseCode = "404", description = "No existe el libro",
-                    content = @Content(schema = @Schema(implementation = Response.class)) )
+                    content = @Content(schema = @Schema(implementation = Response.class)))
     })
     @GetMapping(value = "/books/{id}", produces = "application/json")
     public ResponseEntity<Book> getBook(@PathVariable long id){
@@ -53,7 +63,7 @@ public class BookController {
 
     @Operation(summary = "Registra un nuevo libro")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Libro registrado",
+            @ApiResponse(responseCode = "201", description = "Libro registrado",
                     content = @Content(schema = @Schema(implementation = Book.class)))
     })
     @PostMapping(value = "/books", produces = "application/json", consumes = "application/json")
