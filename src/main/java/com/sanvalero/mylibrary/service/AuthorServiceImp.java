@@ -6,6 +6,7 @@ import com.sanvalero.mylibrary.repository.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Optional;
 import java.util.Set;
 
@@ -41,6 +42,13 @@ public class AuthorServiceImp implements AuthorService {
     public void deleteAuthor(long id) {
         authorRepository.findById(id).orElseThrow(()-> new AuthorNotFoundException(id));
         authorRepository.deleteById(id);
+    }
+
+    @Override
+    public Author modifyAuthorBirthday(long id, String newName) {
+        Author author = authorRepository.findById(id).orElseThrow(()-> new AuthorNotFoundException(id));
+        author.setName(newName);
+        return authorRepository.save(author);
     }
 
 }

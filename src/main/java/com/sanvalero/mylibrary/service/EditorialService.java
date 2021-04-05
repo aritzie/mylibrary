@@ -12,4 +12,5 @@ public interface EditorialService {
     Editorial addEditorial(Editorial editorial);
     Editorial modifyEditorial(long id, Editorial editorial);
     void deleteEditorial(long id);
+    Editorial modifyEditorialName(long id, String newName);
 }

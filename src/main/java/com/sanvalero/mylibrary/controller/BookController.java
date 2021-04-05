@@ -98,6 +98,19 @@ public class BookController {
         return new ResponseEntity<>(Response.noErrorResponse(), HttpStatus.OK);
     }
 
+    @Operation(summary = "Modifica la calificación del libro")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Libro modicado",
+                    content = @Content(schema = @Schema(implementation = Book.class))),
+            @ApiResponse(responseCode = "404", description = "No existe el libro",
+                    content = @Content(schema = @Schema(implementation = Response.class)))
+    })
+    @PatchMapping(value = "/books/{id}/change-rate", produces = "application/json")
+    public ResponseEntity<Book> changeBookName(@PathVariable long id, @RequestParam(value = "newRate") float newRate){
+        Book book = bookService.modifyBookRate(id, newRate);
+        return new ResponseEntity<>(book, HttpStatus.OK);
+    }
+
     @ExceptionHandler(BookNotFoundException.class)
     @ResponseBody
     @ResponseStatus

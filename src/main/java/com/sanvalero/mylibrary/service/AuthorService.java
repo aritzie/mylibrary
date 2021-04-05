@@ -2,6 +2,7 @@ package com.sanvalero.mylibrary.service;
 
 import com.sanvalero.mylibrary.domain.Author;
 
+import java.time.LocalDate;
 import java.util.Optional;
 import java.util.Set;
 
@@ -12,4 +13,5 @@ public interface AuthorService {
     Author addAuthor(Author author);
     Author modifyAuthor(long id, Author author);
     void deleteAuthor(long id);
+    Author modifyAuthorBirthday(long id, String newName);
 }

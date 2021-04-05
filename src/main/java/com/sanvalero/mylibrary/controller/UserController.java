@@ -89,8 +89,16 @@ public class UserController {
         return new ResponseEntity<>(Response.noErrorResponse(), HttpStatus.OK);
     }
 
-    @PatchMapping(value = "/users/{userId}/{bookId}/addBook")
-    public ResponseEntity<User> modifyListBooks(@PathVariable long userId, @PathVariable long bookId){
+    @Operation(summary = "Añade un libro a la lista de libros del usuario")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario modificado",
+                    content = @Content(schema = @Schema(implementation =  User.class))),
+            @ApiResponse(responseCode = "404", description = "No existe el usuario",
+                    content = @Content(schema = @Schema(implementation = Response.class)))
+
+    })
+    @PatchMapping(value = "/users/{userId}/{bookId}/add-book")
+    public ResponseEntity<User> modifyBooksList(@PathVariable long userId, @PathVariable long bookId){
         User user =userService.modifyListBooks(userId, bookId);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }

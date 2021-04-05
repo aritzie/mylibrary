@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.websocket.server.PathParam;
 import java.util.Set;
 
 import static com.sanvalero.mylibrary.controller.Response.NOT_FOUND;
@@ -85,6 +86,19 @@ public class EditorialController {
     public ResponseEntity<Response> deleteEditorial(@PathVariable long id){
         editorialService.deleteEditorial(id);
         return new ResponseEntity<>(Response.noErrorResponse(), HttpStatus.OK);
+    }
+
+    @Operation(summary = "Modifica el nombre de la editorial")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Nombre de la editorial modificado",
+                    content = @Content(schema = @Schema(implementation = Editorial.class))),
+            @ApiResponse(responseCode = "404", description = "No existe la editorial",
+                    content = @Content(schema = @Schema(implementation = Response.class)))
+    })
+    @PatchMapping(value = "editorials/{id}/change-name")
+    public ResponseEntity<Editorial> changeEditorialName(@PathVariable long id, @RequestParam(value = "newName", defaultValue = "") String newName){
+        Editorial editorial = editorialService.modifyEditorialName(id, newName);
+        return new ResponseEntity<>(editorial, HttpStatus.OK);
     }
 
     @ExceptionHandler(EditorialNotFoundException.class)

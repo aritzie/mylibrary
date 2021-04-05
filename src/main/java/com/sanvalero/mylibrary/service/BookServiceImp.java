@@ -87,4 +87,11 @@ public class BookServiceImp implements BookService {
         bookRepository.findById(id).orElseThrow(()-> new BookNotFoundException(id));
         bookRepository.deleteById(id);
     }
+
+    @Override
+    public Book modifyBookRate(long id, float newRate) {
+        Book book = bookRepository.findById(id).orElseThrow(()-> new BookNotFoundException(id));
+        book.setRate(newRate);
+        return bookRepository.save(book);
+    }
 }

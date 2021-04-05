@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 import static com.sanvalero.mylibrary.controller.Response.NOT_FOUND;
@@ -85,6 +86,19 @@ public class AuthorController {
     ResponseEntity<Response> deleteAuthor(@PathVariable long id){
         authorService.deleteAuthor(id);
         return new ResponseEntity<>(Response.noErrorResponse(), HttpStatus.OK);
+    }
+
+    @Operation(summary = "Modifica el nombre del autor")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Autor modificado",
+                    content = @Content(schema = @Schema(implementation = Author.class))),
+            @ApiResponse(responseCode = "404", description = "No existe el autor",
+                    content = @Content(schema = @Schema(implementation = Response.class)))
+    })
+    @PatchMapping(value = "/authors/{id}/change-name")
+    ResponseEntity<Author> changeName(@PathVariable long id, @RequestParam(value = "newName") String newName){
+        Author author = authorService.modifyAuthorBirthday(id, newName);
+        return new ResponseEntity<>(author, HttpStatus.OK);
     }
 
     @ExceptionHandler(AuthorNotFoundException.class)

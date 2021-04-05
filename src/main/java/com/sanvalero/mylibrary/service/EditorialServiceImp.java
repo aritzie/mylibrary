@@ -42,4 +42,11 @@ public class EditorialServiceImp implements EditorialService {
         editorialRepository.findById(id).orElseThrow(()->new EditorialNotFoundException(id));
         editorialRepository.deleteById(id);
     }
+
+    @Override
+    public Editorial modifyEditorialName(long id, String newName) {
+        Editorial editorial = editorialRepository.findById(id).orElseThrow(()->new EditorialNotFoundException(id));
+        editorial.setName(newName);
+        return editorialRepository.save(editorial);
+    }
 }
