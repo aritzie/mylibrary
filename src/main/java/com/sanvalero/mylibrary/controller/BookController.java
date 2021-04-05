@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,8 @@ import static com.sanvalero.mylibrary.controller.Response.NOT_FOUND;
 @RestController
 @Tag(name = "Books", description = "Catálogo de libros")
 public class BookController {
+
+    private final Logger logger = LoggerFactory.getLogger(BookController.class);
 
     @Autowired
     private BookService bookService;
@@ -37,14 +41,15 @@ public class BookController {
     @GetMapping(value = "/books", produces = "application/json")
     public ResponseEntity<Set<Book>> getBooks(@RequestParam(value = "title", defaultValue = "") String title,
                                               @RequestParam(value = "genre", defaultValue = "") String genre,
-                                              @RequestParam(value = "rate", defaultValue = "0") float rate)
-    {
+                                              @RequestParam(value = "rate", defaultValue = "0") float rate) {
+        logger.info("inicio getBooks");
         Book searchBook = new Book();
         searchBook.setTitle(title);
         searchBook.setGenre(genre);
         searchBook.setRate(rate);
         Set<Book> books =  bookService.findByParameters(searchBook);
         if(books.isEmpty()) new BookNotFoundException();
+        logger.info("fin getBooks");
         return new ResponseEntity<>(books, HttpStatus.OK);
     }
 
@@ -57,7 +62,9 @@ public class BookController {
     })
     @GetMapping(value = "/books/{id}", produces = "application/json")
     public ResponseEntity<Book> getBook(@PathVariable long id){
+        logger.info("inicio getBook");
         Book book = bookService.findById(id).orElseThrow(() -> new BookNotFoundException(id));
+        logger.info("fin getBook");
         return new ResponseEntity<>(book, HttpStatus.OK);
     }
 
@@ -68,7 +75,9 @@ public class BookController {
     })
     @PostMapping(value = "/books", produces = "application/json", consumes = "application/json")
     public ResponseEntity<Book> addBook(@RequestBody BookDTO bookDTO){
+        logger.info("inicio addBook");
         Book addedBook = bookService.addBook(bookDTO);
+        logger.info("fin addBook");
         return new ResponseEntity<>(addedBook, HttpStatus.CREATED);
     }
 
@@ -81,7 +90,9 @@ public class BookController {
     })
     @PutMapping(value ="/books/{id}", produces = "application/json",consumes = "application/json")
     public ResponseEntity<Book> modifyBook(@PathVariable long id, @RequestBody Book newBook){
+        logger.info("inicio modifyBook");
         Book book = bookService.modifyBook(id, newBook);
+        logger.info("fin modifyBook");
         return new ResponseEntity<>(book, HttpStatus.OK);
     }
 
@@ -94,7 +105,9 @@ public class BookController {
     })
     @DeleteMapping(value = "/books/{id}", produces = "application/json")
     public ResponseEntity<Response> deleteBook(@PathVariable long id){
+        logger.info("inicio deleteBook");
         bookService.deleteBook(id);
+        logger.info("fin deleteBook");
         return new ResponseEntity<>(Response.noErrorResponse(), HttpStatus.OK);
     }
 
@@ -107,7 +120,9 @@ public class BookController {
     })
     @PatchMapping(value = "/books/{id}/change-rate", produces = "application/json")
     public ResponseEntity<Book> changeBookName(@PathVariable long id, @RequestParam(value = "newRate") float newRate){
+        logger.info("inicio changeBookRate");
         Book book = bookService.modifyBookRate(id, newRate);
+        logger.info("fin changeBookRate");
         return new ResponseEntity<>(book, HttpStatus.OK);
     }
 
@@ -116,6 +131,7 @@ public class BookController {
     @ResponseStatus
     public ResponseEntity<Response> handleException(BookNotFoundException bnfe){
         Response response = Response.errorResponse(NOT_FOUND, bnfe.getMessage());
+        logger.info(bnfe.getMessage(), bnfe);
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 }

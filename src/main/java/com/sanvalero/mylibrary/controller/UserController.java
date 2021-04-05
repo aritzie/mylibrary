@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +27,8 @@ import static com.sanvalero.mylibrary.controller.Response.NOT_FOUND;
 @Tag(name = "User", description = "Usuarios de la aplicación")
 public class UserController {
 
+    private final Logger logger = LoggerFactory.getLogger(UserController.class);
+
     @Autowired
     UserService userService;
 
@@ -35,7 +39,9 @@ public class UserController {
     })
     @GetMapping(value = "/users", produces = "application/json")
     public ResponseEntity<Set<User>> getUsers(){
+        logger.info("inicio getUsers");
         Set<User> users = userService.findAllUsers();
+        logger.info("fin getUsers");
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
@@ -48,7 +54,9 @@ public class UserController {
     })
     @GetMapping(value = "/users{id}", produces = "application/json")
     public ResponseEntity<User> getUser(@PathVariable long id){
+        logger.info("inicio getUser");
         User user = userService.findById(id).orElseThrow(()-> new UserNotFoundException(id));
+        logger.info("fin getUser");
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
@@ -59,7 +67,9 @@ public class UserController {
     })
     @PostMapping(value = "/users", produces = "application/json", consumes = "application/json")
     public ResponseEntity<User> addUser(@RequestBody User user){
+        logger.info("inicio addUser");
         User addedUser = userService.addUser(user);
+        logger.info("fin addUser");
         return new ResponseEntity<>(addedUser, HttpStatus.CREATED);
     }
 
@@ -72,7 +82,9 @@ public class UserController {
     })
     @PutMapping(value = "/users/{id}", produces = "application/json", consumes = "application/json")
     public ResponseEntity<User> modifyUser(@PathVariable long id, @RequestBody User newUser){
+        logger.info("inicio modifyUser");
         User user = userService.modifyUser(id, newUser);
+        logger.info("fin modifyUser");
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
@@ -85,7 +97,9 @@ public class UserController {
     })
     @DeleteMapping(value = "/users/{id}", produces = "appilcation/json", consumes = "application/json")
     public ResponseEntity<Response> deleteUser(@PathVariable long id){
+        logger.info("inicio deleteUser");
         userService.deleteUser(id);
+        logger.info("fin deleteUser");
         return new ResponseEntity<>(Response.noErrorResponse(), HttpStatus.OK);
     }
 
@@ -99,7 +113,9 @@ public class UserController {
     })
     @PatchMapping(value = "/users/{userId}/{bookId}/add-book")
     public ResponseEntity<User> modifyBooksList(@PathVariable long userId, @PathVariable long bookId){
+        logger.info("inicio modifyBooksList");
         User user =userService.modifyListBooks(userId, bookId);
+        logger.info("fin modifyBooksList");
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
@@ -108,6 +124,7 @@ public class UserController {
     @ResponseStatus
     public ResponseEntity<Response> handlerException(UserNotFoundException unfe){
         Response response = Response.errorResponse(NOT_FOUND, unfe.getMessage());
+        logger.error(unfe.getMessage(), unfe);
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 }

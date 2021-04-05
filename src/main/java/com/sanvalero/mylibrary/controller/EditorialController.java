@@ -10,6 +10,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +26,8 @@ import static com.sanvalero.mylibrary.controller.Response.NOT_FOUND;
 @Tag(name = "Editorial", description = "Editoriales con libros publicados")
 public class EditorialController {
 
+    private final Logger logger = LoggerFactory.getLogger(EditorialController.class);
+
     @Autowired
     EditorialService editorialService;
 
@@ -34,7 +38,9 @@ public class EditorialController {
     })
     @GetMapping(value = "/editorials", produces = "application/json")
     public ResponseEntity<Set<Editorial>> getEditorials(){
+        logger.info("inicio getEditorials");
         Set<Editorial> editorials = editorialService.findAllEditorials();
+        logger.info("fin getEditorials");
         return new ResponseEntity<>(editorials, HttpStatus.OK);
     }
 
@@ -47,7 +53,9 @@ public class EditorialController {
     })
     @GetMapping(value = "/editorials/{id}", produces = "application/json")
     public ResponseEntity<Editorial> getEditorial(@PathVariable long id){
+        logger.info("inicio getEditorial");
         Editorial editorial = editorialService.findById(id).orElseThrow(()-> new EditorialNotFoundException(id));
+        logger.info("fin getEditorial");
         return new ResponseEntity<>(editorial, HttpStatus.OK);
     }
 
@@ -58,7 +66,9 @@ public class EditorialController {
     })
     @PostMapping(value = "/editorials", produces = "application/json", consumes = "application/json")
     public ResponseEntity<Editorial> addEditorial(@RequestBody  Editorial editorial){
+        logger.info("inicio addEditorial");
         Editorial addedEditorial = editorialService.addEditorial(editorial);
+        logger.info("fin addEditorial");
         return new ResponseEntity<>(addedEditorial, HttpStatus.CREATED);
     }
 
@@ -71,7 +81,9 @@ public class EditorialController {
     })
     @PutMapping(value = "/editorials/{id}", produces = "application/json", consumes = "application/json")
     public ResponseEntity<Editorial> modifyEditorial(@PathVariable long id, @RequestBody Editorial newEditorial){
+        logger.info("inicio modifyEditorial");
         Editorial editorial = editorialService.modifyEditorial(id, newEditorial);
+        logger.info("fin modifyEditorial");
         return new ResponseEntity<>(editorial, HttpStatus.OK);
     }
 
@@ -84,7 +96,9 @@ public class EditorialController {
     })
     @DeleteMapping(value = "/editorials/{id}", produces = "application/json")
     public ResponseEntity<Response> deleteEditorial(@PathVariable long id){
+        logger.info("inicio deleteEditorial");
         editorialService.deleteEditorial(id);
+        logger.info("fin deleteEditorial");
         return new ResponseEntity<>(Response.noErrorResponse(), HttpStatus.OK);
     }
 
@@ -96,8 +110,11 @@ public class EditorialController {
                     content = @Content(schema = @Schema(implementation = Response.class)))
     })
     @PatchMapping(value = "editorials/{id}/change-name")
-    public ResponseEntity<Editorial> changeEditorialName(@PathVariable long id, @RequestParam(value = "newName", defaultValue = "") String newName){
+    public ResponseEntity<Editorial> changeEditorialName(@PathVariable long id,
+                                                         @RequestParam(value = "newName", defaultValue = "") String newName){
+        logger.info("inicio changeEditorialName");
         Editorial editorial = editorialService.modifyEditorialName(id, newName);
+        logger.info("fin changeEditorialName");
         return new ResponseEntity<>(editorial, HttpStatus.OK);
     }
 
@@ -106,6 +123,7 @@ public class EditorialController {
     @ResponseStatus
     public ResponseEntity<Response> handlerException(EditorialNotFoundException enfe){
         Response response = Response.errorResponse(NOT_FOUND, enfe.getMessage());
+        logger.error(enfe.getMessage(), enfe);
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 }
