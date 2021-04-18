@@ -55,6 +55,8 @@ public class UserServiceImp implements UserService{
         User user = userRepository.findById(userId).orElseThrow(()-> new UserNotFoundException(userId));
         Book book = bookRepository.findById(bookId).orElseThrow(()-> new BookNotFoundException(bookId));
         user.addBook(book);
+        int readBooks = user.getReadBooks();
+        user.setReadBooks(readBooks+1);
         return userRepository.save(user);
     }
 }

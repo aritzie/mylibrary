@@ -33,10 +33,18 @@ public class Author {
     @Column(name = "last_name")
     private String lastName;
 
-    @Schema(description = "Fecha de nacimiento", example = "01-01-1900")
+    @Schema(description = "Fecha de nacimiento", example = "01/01/1900")
     @Column
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate birthday;
+
+    @Schema(description = "Número de publicaciones", example = "5")
+    @Column
+    private int publications;
+
+    @Schema(description = "Si está inactivo", example = "false")
+    @Column
+    private boolean inactive;
 
     @OneToMany(mappedBy = "author")
     @JsonBackReference

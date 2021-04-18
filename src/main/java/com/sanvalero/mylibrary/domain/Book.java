@@ -3,6 +3,7 @@ package com.sanvalero.mylibrary.domain;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDate;
 
 
 @Data
@@ -39,6 +41,11 @@ public class Book {
     @Schema(description = "El libro está catalogado", example = "true")
     @Column
     private boolean cataloged;
+
+    @Schema(description = "Fecha de la primera publicación", example = "01/01/2021")
+    @Column
+    @JsonFormat(pattern = "dd/MM/yyyy")
+    private LocalDate firstPublication;
 
     @ManyToOne
     @JoinColumn(name = "editorial_id")

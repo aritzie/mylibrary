@@ -54,13 +54,27 @@ public class BookServiceImp implements BookService {
     }
 
     @Override
+    public Set<Book> findByAuthor(Author author) {
+        return bookRepository.findByAuthor(author);
+    }
+
+    @Override
+    public Set<Book> findByEditorial(Editorial editorial) {
+        return bookRepository.findByEditorial(editorial);
+    }
+
+    @Override
     public Optional<Book> findById(long id) {
         return bookRepository.findById(id);
     }
 
-
     @Override
     public Book addBook(BookDTO bookDTO) {
+        if(bookDTO.getTitle().equals("") || bookDTO.getAuthorName().equals("")
+                || bookDTO.getAuthorLastName().equals("") || bookDTO.getEditorial().equals("")
+                || bookDTO.getTitle()==null || bookDTO.getAuthorName()==null
+                || bookDTO.getAuthorLastName()==null || bookDTO.getEditorial()==null) return null;
+
         Author author = authorRepository.findByNameAndLastName(bookDTO.getAuthorName(), bookDTO.getAuthorLastName())
                 .orElseThrow(()-> new AuthorNotFoundException(bookDTO.getAuthorName(), bookDTO.getAuthorLastName()));
 
@@ -71,6 +85,13 @@ public class BookServiceImp implements BookService {
         newBook.setAuthor(author);
         newBook.setEditorial(editorial);
         newBook.setTitle(bookDTO.getTitle());
+
+        int authorPublications = author.getPublications();
+        int editorialPublications = editorial.getPublications();
+        author.setPublications(authorPublications+1);
+        editorial.setPublications(editorialPublications+1);
+        authorRepository.save(author);
+        editorialRepository.save(editorial);
 
         return bookRepository.save(newBook);
     }

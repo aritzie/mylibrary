@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +24,18 @@ public class User {
     @NotBlank
     @Column
     private String userName;
+
+    @Schema(description = "Número de libros leídos", example = "2")
+    @Column
+    private int readBooks;
+
+    @Schema(description = "Fecha de alta", example = "18/04/2021")
+    @Column
+    private LocalDate creationDate;
+
+    @Schema(description = "Si está inactivo", example = "false")
+    @Column
+    private boolean inactive;
 
     @ManyToMany(targetEntity = Book.class)
     private List<Book> books;

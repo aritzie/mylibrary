@@ -1,8 +1,14 @@
 package com.sanvalero.mylibrary.controller;
 
+import com.sanvalero.mylibrary.domain.Author;
 import com.sanvalero.mylibrary.domain.Book;
+import com.sanvalero.mylibrary.domain.Editorial;
 import com.sanvalero.mylibrary.domain.dto.BookDTO;
+import com.sanvalero.mylibrary.exception.AuthorNotFoundException;
 import com.sanvalero.mylibrary.exception.BookNotFoundException;
+import com.sanvalero.mylibrary.exception.EditorialNotFoundException;
+import com.sanvalero.mylibrary.repository.AuthorRepository;
+import com.sanvalero.mylibrary.repository.EditorialRepository;
 import com.sanvalero.mylibrary.service.BookService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -31,6 +37,12 @@ public class BookController {
     @Autowired
     private BookService bookService;
 
+    @Autowired
+    private AuthorRepository authorRepository;
+
+    @Autowired
+    private EditorialRepository editorialRepository;
+
     @Operation(summary = "Obtiene el listado de libros")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Listado de libros",
@@ -48,8 +60,45 @@ public class BookController {
         searchBook.setGenre(genre);
         searchBook.setRate(rate);
         Set<Book> books =  bookService.findByParameters(searchBook);
-        if(books.isEmpty()) new BookNotFoundException();
+        if(books.isEmpty()) throw new BookNotFoundException();
         logger.info("fin getBooks");
+        return new ResponseEntity<>(books, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Obtiene un listado de libros por autor")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Listado de libros",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = Book.class)))),
+            @ApiResponse(responseCode = "404", description = "No existe el autor",
+                    content = @Content(schema = @Schema(implementation = Response.class)))
+    })
+    @GetMapping(value = "/books/author", produces = "application/json")
+    public ResponseEntity<Set<Book>> getBooksByAuthor(@RequestParam(value = "authorName") String authorName,
+                                                      @RequestParam(value = "authorLastName")String authorLastName){
+        logger.info("inicio getBooksByAuthor");
+        Author author = authorRepository.findByNameAndLastName(authorName, authorLastName)
+                .orElseThrow(()->new AuthorNotFoundException(authorName, authorLastName));
+
+        Set<Book> books = bookService.findByAuthor(author);
+        logger.info("fin getBooksByAuthor");
+        return new ResponseEntity<>(books, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Obtiene un listado de libros por editorial")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Listado de libros",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = Book.class)))),
+            @ApiResponse(responseCode = "404", description = "No existe la editorial",
+                    content = @Content(schema = @Schema(implementation = Response.class)))
+    })
+    @GetMapping(value = "/books/editorial", produces = "application/json")
+    public ResponseEntity<Set<Book>> getBooksByEditorial(@RequestParam(value = "editorialName") String editorialName){
+        logger.info("inicio getBooksByEditorial");
+        Editorial editorial = editorialRepository.findByName(editorialName)
+                .orElseThrow(()-> new EditorialNotFoundException(editorialName));
+
+        Set<Book> books = bookService.findByEditorial(editorial);
+        logger.info("fin getBooksByEditorial");
         return new ResponseEntity<>(books, HttpStatus.OK);
     }
 
