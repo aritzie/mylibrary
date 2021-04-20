@@ -13,5 +13,5 @@ public interface AuthorService {
     Author addAuthor(Author author);
     Author modifyAuthor(long id, Author author);
     void deleteAuthor(long id);
-    Author modifyAuthorBirthday(long id, String newName);
+    Author modifyAuthorName(long id, String newName);
 }

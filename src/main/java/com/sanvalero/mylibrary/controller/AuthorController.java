@@ -17,7 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.Set;
 
 import static com.sanvalero.mylibrary.controller.Response.NOT_FOUND;
@@ -112,7 +111,7 @@ public class AuthorController {
     @PatchMapping(value = "/authors/{id}/change-name")
     ResponseEntity<Author> changeName(@PathVariable long id, @RequestParam(value = "newName") String newName){
         logger.info("inicio changeName");
-        Author author = authorService.modifyAuthorBirthday(id, newName);
+        Author author = authorService.modifyAuthorName(id, newName);
         logger.info("fin changeName");
         return new ResponseEntity<>(author, HttpStatus.OK);
     }

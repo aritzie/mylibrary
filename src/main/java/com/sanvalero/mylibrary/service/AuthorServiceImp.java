@@ -45,7 +45,7 @@ public class AuthorServiceImp implements AuthorService {
     }
 
     @Override
-    public Author modifyAuthorBirthday(long id, String newName) {
+    public Author modifyAuthorName(long id, String newName) {
         Author author = authorRepository.findById(id).orElseThrow(()-> new AuthorNotFoundException(id));
         author.setName(newName);
         return authorRepository.save(author);

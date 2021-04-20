@@ -52,7 +52,7 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "No existe el usuario",
                     content = @Content(schema = @Schema(implementation = Response.class)))
     })
-    @GetMapping(value = "/users{id}", produces = "application/json")
+    @GetMapping(value = "/users/{id}", produces = "application/json")
     public ResponseEntity<User> getUser(@PathVariable long id){
         logger.info("inicio getUser");
         User user = userService.findById(id).orElseThrow(()-> new UserNotFoundException(id));
