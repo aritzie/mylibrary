@@ -1,5 +1,6 @@
 package com.sanvalero.mylibrary.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Data;
@@ -31,6 +32,7 @@ public class User {
 
     @Schema(description = "Fecha de alta", example = "18/04/2021")
     @Column
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate creationDate;
 
     @Schema(description = "Si está inactivo", example = "false")

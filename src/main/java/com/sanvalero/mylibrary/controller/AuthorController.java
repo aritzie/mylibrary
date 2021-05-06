@@ -63,7 +63,7 @@ public class AuthorController {
             @ApiResponse(responseCode = "201", description = "Autor registrado",
                     content = @Content(schema = @Schema(implementation = Author.class))),
     })
-    @PostMapping(value = "/authors", produces = "aplication/json", consumes = "application/json")
+    @PostMapping(value = "/authors", produces = "application/json", consumes = "application/json")
     public ResponseEntity<Author> addAuthor(@RequestBody Author author){
         logger.info("inicio addAuthor");
         Author addedAuthor = authorService.addAuthor(author);
